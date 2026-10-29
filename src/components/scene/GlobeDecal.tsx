@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-const LOGO_URL = "/brand/al-ghurair-logo.png";
+const LOGO_URL = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/al-ghurair-logo.png`;
 const W = 2048;
 const H = 1024;
 /** Equirect x of the point on the sphere that faces local +z (u = 0.25). */
