@@ -1,26 +1,214 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-space: #0c0a10;
+  --color-panel: rgb(38 31 46 / 0.88);
+  --color-panel-solid: #1f1a25;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.18);
+  --color-ink: #f3eff8;
+  --color-muted: #a59eb2;
+  --color-faint: #78718a;
+  --color-lavender: #cdbcf2;
+  --color-magenta: #d4348f;
+  --font-sans: var(--font-geist-sans), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html,
+body {
+  background: var(--color-space);
+  color: var(--color-ink);
+  overscroll-behavior: none;
+}
+
+.galaxy-bg {
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 55%, rgb(74 44 98 / 0.32), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 78% 25%, rgb(60 46 120 / 0.18), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 18% 80%, rgb(110 36 92 / 0.14), transparent 70%),
+    linear-gradient(180deg, #0b0910 0%, #110d17 55%, #0b0910 100%);
+}
+
+/* ── Planet labels (DOM layer positioned by LabelPositioner) ── */
+
+.planet-face,
+.planet-caption,
+.planet-label,
+.orbit-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+.planet-face {
+  transform-origin: 50% 50%;
+}
+/* Placed beside its planet: align text toward the planet. */
+.planet-label[data-side="right"] {
+  align-items: flex-start;
+  text-align: left;
+}
+.planet-label[data-side="left"] {
+  align-items: flex-end;
+  text-align: right;
+}
+/* No free spot this frame: tuck away until there is room. */
+.planet-label[data-hidden],
+.orbit-label[data-hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.planet-label {
+  display: flex;
+  width: max-content;
+  max-width: 13rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  border-radius: 0.7rem;
+  padding: 0.3rem 0.55rem 0.35rem;
+  text-align: center;
+  color: var(--color-ink);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.85);
+  transition:
+    opacity 0.35s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.planet-label:focus-visible {
+  outline: 2px solid var(--color-lavender);
+  outline-offset: 2px;
+}
+.planet-label[data-hovered] {
+  background: #241d2c;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+}
+/* Filtered-out planets: muted text on the same solid panel (no see-through). */
+.planet-label[data-dimmed]:not([data-hovered]) {
+  color: var(--color-faint);
+}
+.planet-label[data-dimmed]:not([data-hovered]) .planet-label__count,
+.planet-label[data-dimmed]:not([data-hovered]) .planet-label__meta {
+  color: var(--color-faint);
+}
+.planet-label__title {
+  white-space: pre-line;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.planet-label__count {
+  font-size: 0.68rem;
+  color: rgb(243 239 248 / 0.88);
+}
+.planet-label__meta {
+  font-size: 0.64rem;
+  color: var(--color-muted);
+}
+
+.planet-face {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #3a1d5c;
+}
+.planet-caption {
+  display: block;
+  width: max-content;
+  max-width: 16rem;
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgb(243 239 248 / 0.72);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.9);
+}
+
+@media (max-width: 640px) {
+  .planet-label {
+    max-width: 8.5rem;
+    padding: 0.3rem 0.45rem;
+  }
+  .planet-label__title {
+    font-size: 0.74rem;
+  }
+  .planet-label__count,
+  .planet-label__meta {
+    font-size: 0.64rem;
+  }
+  .planet-face {
+    font-size: 0.85rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Orbit names printed on each ring */
+.orbit-label {
+  display: block;
+  transition: opacity 0.25s ease;
+  width: max-content;
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgb(205 188 242 / 0.6);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.9);
+  pointer-events: none;
+}
+.orbit-label[data-dimmed] {
+  color: rgb(205 188 242 / 0.22);
+}
+
+/* Labels ease in, staggered by index, whenever a level opens */
+.planet-label,
+.planet-caption,
+.planet-face,
+.orbit-label {
+  animation: label-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes label-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* ── Utilities ── */
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+}
+
+.loader-orbit {
+  animation: loader-spin 2.4s linear infinite;
+}
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-orbit {
+    animation: none;
+  }
+  .planet-label {
+    transition: none;
+  }
+  .planet-label,
+  .planet-caption,
+  .planet-face,
+  .orbit-label {
+    animation: none;
+  }
 }
