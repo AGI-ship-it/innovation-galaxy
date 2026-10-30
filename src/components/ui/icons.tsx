@@ -38,3 +38,10 @@ export const OrbitIcon = (p: SVGProps<SVGSVGElement>) => (
     <ellipse cx="12" cy="12" rx="10" ry="5" />
   </svg>
 );
+
+export const TrendUpIcon = (p: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden {...base} {...p}>
+    <path d="M3 17l6-6 4 4 8-8" />
+    <path d="M15 7h6v6" />
+  </svg>
+);

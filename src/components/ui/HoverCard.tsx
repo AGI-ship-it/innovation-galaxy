@@ -7,7 +7,7 @@ import type { Category, Maturity } from "@/data/types";
 import { getUseCase, placementsFor, plural, recordsFor } from "@/lib/data";
 import { openPlanet } from "@/lib/actions";
 import { useExplorer } from "@/lib/store";
-import { ArrowUpRight } from "./icons";
+import { ArrowUpRight, TrendUpIcon } from "./icons";
 
 interface CardContent {
   eyebrow: string;
@@ -58,7 +58,10 @@ function contentFor(id: string, category: Category | null): CardContent | null {
         <>
           <p className="line-clamp-4 text-sm leading-relaxed text-ink/85 sm:line-clamp-5">{text}</p>
           <div className="mt-4 border-t border-line-strong pt-3">
-            <p className="text-xs font-semibold text-lavender">Value realised</p>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-lavender">
+              <TrendUpIcon />
+              Value realised
+            </p>
             <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-ink/90">{u.value}</p>
           </div>
         </>

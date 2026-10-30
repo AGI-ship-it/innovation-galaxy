@@ -2,7 +2,8 @@ import { MATURITY_ORDER, familyOrder, getFamily } from "@/data/families";
 import type { Category, Maturity, Recommendation, TechFamily, UseCaseRecord } from "@/data/types";
 import { USE_CASES } from "@/data/useCases";
 
-export const RECORDS: UseCaseRecord[] = USE_CASES;
+/** Titles use "&" in place of "and" (the deck spells it out). */
+export const RECORDS: UseCaseRecord[] = USE_CASES.map((u) => ({ ...u, title: u.title.replace(/\band\b/gi, "&") }));
 
 const RECOMMENDATION_ORDER: Recommendation[] = ["Quick win", "Consider for pilot", "Long-term invest", "Deprioritise"];
 
